@@ -1,7 +1,7 @@
 # App Aluno - React
 
 Portabilidade do App Aluno de HTML/CSS/JS puro para React + Vite.
-Projeto final (N3) — Disciplina: Front-end — Centro Universitário SATC.
+Projeto final (N3) - Disciplina: Front-end - Centro Universitário SATC.
 
 ## Tecnologias
 
