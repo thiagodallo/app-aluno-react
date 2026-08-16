@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { useUsuario } from '../context/UsuarioContext'
 import './auth.css'
 
@@ -9,6 +9,7 @@ export default function CadastroDadosPage() {
   const { fazerLogin } = useUsuario()
 
   const cpf = location.state?.cpf ?? ''
+  if (!cpf) return <Navigate to="/cadastro" replace />
 
   const [form, setForm] = useState({ nome: '', telefone: '', email: '', senha: '' })
   const [erros, setErros] = useState({})

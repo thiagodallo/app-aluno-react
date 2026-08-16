@@ -3,7 +3,20 @@ import { Link, useNavigate } from 'react-router-dom'
 import './auth.css'
 
 function validarCPF(cpf) {
-  return /^\d{3}\.\d{3}\.\d{3}-\d{2}$|^\d{11}$/.test(cpf.replace(/\s/g, ''))
+  const digitos = cpf.replace(/\D/g, '')
+  if (digitos.length !== 11 || /^(\d)\1{10}$/.test(digitos)) return false
+
+  function digitoVerificador(base) {
+    const soma = base
+      .split('')
+      .reduce((acc, num, i) => acc + Number(num) * (base.length + 1 - i), 0)
+    const resto = soma % 11
+    return resto < 2 ? 0 : 11 - resto
+  }
+
+  const dv1 = digitoVerificador(digitos.slice(0, 9))
+  const dv2 = digitoVerificador(digitos.slice(0, 9) + dv1)
+  return digitos === digitos.slice(0, 9) + String(dv1) + String(dv2)
 }
 
 export default function CadastroPage() {
