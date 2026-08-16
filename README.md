@@ -37,7 +37,7 @@ Acesse em: http://localhost:5173
 
 ```
 src/
-├── components/   # InputField, Botao, Card, DisciplinaCard, ProtectedRoute
+├── components/   # DisciplinaCard, ProtectedRoute
 ├── pages/        # LoginPage, DashboardPage, DisciplinasPage, PerfilPage, TutorIAPage...
 ├── context/      # UsuarioContext.jsx, ThemeContext.jsx
 ├── services/     # apiService.js
