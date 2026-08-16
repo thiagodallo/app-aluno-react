@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { useUsuario } from '../context/UsuarioContext'
 import './DashboardPage.css'
 
@@ -47,6 +48,7 @@ const ESTATISTICAS = [
 
 export default function DashboardPage() {
   const { usuario } = useUsuario()
+  const navigate = useNavigate()
   const primeiroNome = (usuario?.nome || 'Aluno').split(' ')[0]
 
   return (
@@ -70,7 +72,7 @@ export default function DashboardPage() {
               <span className="progress-card__pct">{curso.progresso}%</span>
             </div>
           </div>
-          <button className="btn btn--primary">Retomar Estudo →</button>
+          <button className="btn btn--primary" onClick={() => navigate('/app/disciplinas')}>Retomar Estudo →</button>
         </div>
       ))}
 

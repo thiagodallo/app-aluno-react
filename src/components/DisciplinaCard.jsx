@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom'
 import './DisciplinaCard.css'
 
 export default function DisciplinaCard({ nome, professor, status, progresso }) {
+  const navigate = useNavigate()
   const emCurso = status === 'curso'
 
   return (
@@ -25,7 +27,9 @@ export default function DisciplinaCard({ nome, professor, status, progresso }) {
         </div>
       </div>
 
-      <button className="btn btn--primary btn--block">Acessar Disciplina</button>
+      <button className="btn btn--primary btn--block" onClick={() => navigate('/app/tutor-ia')}>
+        Acessar Disciplina
+      </button>
     </div>
   )
 }
