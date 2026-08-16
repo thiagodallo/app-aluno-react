@@ -189,6 +189,18 @@
   margin-top: 20px;
 }
 
+.link-button {
+  display: block;
+  margin-top: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #059669;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* link de voltar */
 .back-link {
   display: block;

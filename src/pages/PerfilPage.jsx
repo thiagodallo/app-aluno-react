@@ -4,11 +4,15 @@ import { useUsuario } from '../context/UsuarioContext'
 import { useTema } from '../context/ThemeContext'
 import './PerfilPage.css'
 
-const ABAS = ['Dados Pessoais', 'Configurações', 'Segurança']
+const ABAS = [
+  { nome: 'Dados Pessoais', id: 'dados-pessoais' },
+  { nome: 'Configurações', id: 'configuracoes' },
+  { nome: 'Segurança', id: 'seguranca' },
+]
 
 export default function PerfilPage() {
   const { usuario } = useUsuario()
-  const [abaAtiva, setAbaAtiva] = useState('Dados Pessoais')
+  const [abaAtiva, setAbaAtiva] = useState(ABAS[0].id)
 
   const nome = usuario?.nome || 'João Silva'
   const iniciais = nome.split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase()
@@ -25,21 +29,27 @@ export default function PerfilPage() {
         </div>
       </div>
 
-      <div className="perfil__tabs">
+      <div className="perfil__tabs" role="tablist" aria-label="Seções do perfil">
         {ABAS.map(aba => (
           <button
-            key={aba}
-            className={`perfil__tab ${abaAtiva === aba ? 'perfil__tab--active' : ''}`}
-            onClick={() => setAbaAtiva(aba)}
+            key={aba.id}
+            id={`tab-${aba.id}`}
+            role="tab"
+            aria-selected={abaAtiva === aba.id}
+            aria-controls={`painel-${aba.id}`}
+            className={`perfil__tab ${abaAtiva === aba.id ? 'perfil__tab--active' : ''}`}
+            onClick={() => setAbaAtiva(aba.id)}
           >
-            {aba}
+            {aba.nome}
           </button>
         ))}
       </div>
 
-      {abaAtiva === 'Dados Pessoais' && <DadosPessoais usuario={usuario} />}
-      {abaAtiva === 'Configurações' && <Configuracoes />}
-      {abaAtiva === 'Segurança' && <Seguranca />}
+      <div id={`painel-${abaAtiva}`} role="tabpanel" aria-labelledby={`tab-${abaAtiva}`}>
+        {abaAtiva === 'dados-pessoais' && <DadosPessoais usuario={usuario} />}
+        {abaAtiva === 'configuracoes' && <Configuracoes />}
+        {abaAtiva === 'seguranca' && <Seguranca />}
+      </div>
     </div>
   )
 }
@@ -131,7 +141,7 @@ function Seguranca() {
           <h4>Senha</h4>
           <p>Sua última alteração foi há 3 meses.</p>
         </div>
-        <button className="btn btn--outline">Alterar senha</button>
+        <button className="btn btn--outline" onClick={() => navigate('/nova-senha')}>Alterar senha</button>
       </div>
 
       <div className="config__linha">

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './auth.css'
 
 function validarEmail(email) {
@@ -7,6 +7,7 @@ function validarEmail(email) {
 }
 
 export default function RecuperarSenhaPage() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [erro, setErro] = useState('')
   const [enviado, setEnviado] = useState(false)
@@ -39,6 +40,9 @@ export default function RecuperarSenhaPage() {
           {enviado ? (
             <div className="success-box">
               Link enviado! Verifique sua caixa de entrada em <strong>{email}</strong>.
+              <button type="button" className="link-button" onClick={() => navigate('/nova-senha')}>
+                Simular clique no link do e-mail
+              </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate>
