@@ -5,7 +5,12 @@ const UsuarioContext = createContext(null)
 export function UsuarioProvider({ children }) {
   const [usuario, setUsuario] = useState(() => {
     const salvo = localStorage.getItem('usuario')
-    return salvo ? JSON.parse(salvo) : null
+    if (!salvo) return null
+    try {
+      return JSON.parse(salvo)
+    } catch {
+      return null
+    }
   })
 
   function fazerLogin(dados) {
