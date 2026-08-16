@@ -122,15 +122,6 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
-.chat__anexo {
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  display: inline-flex;
-  padding: 4px;
-  flex-shrink: 0;
-}
-
 .chat__input input {
   flex: 1;
   border: none;

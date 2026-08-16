@@ -25,29 +25,29 @@ function AvatarTutor() {
   )
 }
 
-function AcoesMensagem() {
+function AcoesMensagem({ texto, curtida, onOuvir, onCopiar, onRefazer, onCurtida }) {
   return (
     <div className="msg__acoes">
-      <button aria-label="Ouvir">
+      <button aria-label="Ouvir" onClick={onOuvir}>
         <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M4 8v4h3l4 3V5L7 8H4Z" strokeLinejoin="round" />
           <path d="M14 8a3 3 0 0 1 0 4" strokeLinecap="round" />
         </svg>
       </button>
-      <button aria-label="Copiar">
+      <button aria-label="Copiar" onClick={onCopiar}>
         <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
           <rect x="7" y="7" width="9" height="9" rx="1.5" />
           <path d="M13 7V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h2" />
         </svg>
       </button>
-      <button aria-label="Refazer">
+      <button aria-label="Refazer" onClick={onRefazer}>
         <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M15 6a6 6 0 1 0 1.5 4" strokeLinecap="round" />
           <path d="M16 3v3h-3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      <button aria-label="Não gostei">
-        <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <button aria-label="Não gostei" aria-pressed={curtida === 'negativa'} onClick={onCurtida}>
+        <svg viewBox="0 0 20 20" width="15" height="15" fill={curtida === 'negativa' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5">
           <path d="M13 4v8M6 4h5v8l-3 4a1.5 1.5 0 0 1-1.4-2l.6-2H4a1.5 1.5 0 0 1-1.4-2l1-4A1.5 1.5 0 0 1 5 4h1Z" strokeLinejoin="round" />
         </svg>
       </button>
@@ -95,6 +95,38 @@ export default function TutorIAPage() {
     }
   }
 
+  function ouvir(texto) {
+    if (!('speechSynthesis' in window)) return
+    window.speechSynthesis.cancel()
+    const fala = new SpeechSynthesisUtterance(texto)
+    fala.lang = 'pt-BR'
+    window.speechSynthesis.speak(fala)
+  }
+
+  function copiar(texto) {
+    navigator.clipboard?.writeText(texto)
+  }
+
+  function curtir(id) {
+    setMensagens(prev => prev.map(m =>
+      m.id === id ? { ...m, curtida: m.curtida === 'negativa' ? null : 'negativa' } : m
+    ))
+  }
+
+  async function refazer(id) {
+    setCarregando(true)
+    try {
+      const resposta = await buscarRespostaTutor()
+      setMensagens(prev => prev.map(m => (m.id === id ? { ...m, texto: resposta } : m)))
+    } catch {
+      setMensagens(prev => prev.map(m =>
+        m.id === id ? { ...m, texto: 'Desculpe, não consegui responder agora. Tente novamente.' } : m
+      ))
+    } finally {
+      setCarregando(false)
+    }
+  }
+
   const nomeUsuario = usuario?.nome || 'Aluno'
   const inicialUsuario = nomeUsuario[0].toUpperCase()
 
@@ -110,7 +142,16 @@ export default function TutorIAPage() {
             <div className="msg__corpo">
               <span className="msg__autor">{m.autor === 'tutor' ? 'Tutor IA' : nomeUsuario}</span>
               <p className="msg__texto">{m.texto}</p>
-              {m.autor === 'tutor' && !m.inicial && <AcoesMensagem />}
+              {m.autor === 'tutor' && !m.inicial && (
+                <AcoesMensagem
+                  texto={m.texto}
+                  curtida={m.curtida}
+                  onOuvir={() => ouvir(m.texto)}
+                  onCopiar={() => copiar(m.texto)}
+                  onRefazer={() => refazer(m.id)}
+                  onCurtida={() => curtir(m.id)}
+                />
+              )}
             </div>
           </div>
         ))}
@@ -131,12 +172,9 @@ export default function TutorIAPage() {
       </div>
 
       <form className="chat__input" onSubmit={enviar}>
-        <button type="button" className="chat__anexo" aria-label="Anexar arquivo">
-          <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6">
-            <path d="M14 7l-5.5 5.5a2 2 0 0 1-3-3L11 4a3 3 0 0 1 4 4l-5.5 5.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+        <label htmlFor="pergunta-tutor" className="sr-only">Pergunte alguma coisa ao Tutor IA</label>
         <input
+          id="pergunta-tutor"
           type="text"
           placeholder="Pergunte alguma coisa"
           value={pergunta}
