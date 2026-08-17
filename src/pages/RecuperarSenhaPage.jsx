@@ -56,7 +56,7 @@ export default function RecuperarSenhaPage() {
                 onChange={e => { setEmail(e.target.value); setErro('') }}
                 className={erro ? 'input--error' : ''}
               />
-              {erro && <span className="field-error">{erro}</span>}
+              {erro && <span className="field-error" role="alert">{erro}</span>}
 
               <button type="submit" disabled={loading}>
                 {loading ? 'Enviando...' : 'Enviar'}

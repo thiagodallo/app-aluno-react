@@ -72,7 +72,7 @@ export default function CadastroDadosPage() {
               value={form.nome} onChange={handleChange}
               className={erros.nome ? 'input--error' : ''}
             />
-            {erros.nome && <span className="field-error">{erros.nome}</span>}
+            {erros.nome && <span className="field-error" role="alert">{erros.nome}</span>}
 
             <label htmlFor="telefone">Telefone</label>
             <input
@@ -80,7 +80,7 @@ export default function CadastroDadosPage() {
               value={form.telefone} onChange={handleChange}
               className={erros.telefone ? 'input--error' : ''}
             />
-            {erros.telefone && <span className="field-error">{erros.telefone}</span>}
+            {erros.telefone && <span className="field-error" role="alert">{erros.telefone}</span>}
 
             <label htmlFor="email">E-mail</label>
             <input
@@ -88,7 +88,7 @@ export default function CadastroDadosPage() {
               value={form.email} onChange={handleChange}
               className={erros.email ? 'input--error' : ''}
             />
-            {erros.email && <span className="field-error">{erros.email}</span>}
+            {erros.email && <span className="field-error" role="alert">{erros.email}</span>}
 
             <label htmlFor="senha">Senha</label>
             <input
@@ -96,7 +96,7 @@ export default function CadastroDadosPage() {
               value={form.senha} onChange={handleChange}
               className={erros.senha ? 'input--error' : ''}
             />
-            {erros.senha && <span className="field-error">{erros.senha}</span>}
+            {erros.senha && <span className="field-error" role="alert">{erros.senha}</span>}
 
             <button type="submit" disabled={loading}>
               {loading ? 'Cadastrando...' : 'Cadastrar'}

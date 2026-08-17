@@ -79,7 +79,7 @@ export default function LoginPage() {
               onChange={handleChange}
               className={erros.email ? 'input--error' : ''}
             />
-            {erros.email && <span className="field-error">{erros.email}</span>}
+            {erros.email && <span className="field-error" role="alert">{erros.email}</span>}
 
             <label htmlFor="senha">
               Senha
@@ -93,7 +93,7 @@ export default function LoginPage() {
               onChange={handleChange}
               className={erros.senha ? 'input--error' : ''}
             />
-            {erros.senha && <span className="field-error">{erros.senha}</span>}
+            {erros.senha && <span className="field-error" role="alert">{erros.senha}</span>}
 
             <button type="submit" disabled={loading}>
               {loading ? 'Entrando...' : 'Entrar'}

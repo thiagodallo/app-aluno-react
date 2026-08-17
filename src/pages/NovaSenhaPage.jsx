@@ -57,7 +57,7 @@ export default function NovaSenhaPage() {
               onChange={handleChange}
               className={erros.senha ? 'input--error' : ''}
             />
-            {erros.senha && <span className="field-error">{erros.senha}</span>}
+            {erros.senha && <span className="field-error" role="alert">{erros.senha}</span>}
 
             <label htmlFor="confirmar">Confirmar nova senha</label>
             <input
@@ -69,7 +69,7 @@ export default function NovaSenhaPage() {
               onChange={handleChange}
               className={erros.confirmar ? 'input--error' : ''}
             />
-            {erros.confirmar && <span className="field-error">{erros.confirmar}</span>}
+            {erros.confirmar && <span className="field-error" role="alert">{erros.confirmar}</span>}
 
             <button type="submit" disabled={loading}>
               {loading ? 'Salvando...' : 'Redefinir senha'}

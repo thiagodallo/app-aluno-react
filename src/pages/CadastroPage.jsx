@@ -60,7 +60,7 @@ export default function CadastroPage() {
               onChange={e => { setCpf(e.target.value); setErro('') }}
               className={erro ? 'input--error' : ''}
             />
-            {erro && <span className="field-error">{erro}</span>}
+            {erro && <span className="field-error" role="alert">{erro}</span>}
 
             <button type="submit">Prosseguir</button>
           </form>
