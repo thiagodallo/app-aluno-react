@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { IconePainel, IconeDisciplinas, IconeTutor, IconePerfil } from '../components/icons'
+import { useTutorIa } from '../context/TutorIaContext'
 import './InternalLayout.css'
 
 const ITENS = [
@@ -14,6 +15,8 @@ function classeLink({ isActive }) {
 }
 
 export default function InternalLayout() {
+  const { naoLida } = useTutorIa()
+
   return (
     <div className="app-shell">
       <header className="menu">
@@ -24,12 +27,19 @@ export default function InternalLayout() {
           </div>
 
           <nav className="menu__links">
-            {ITENS.map(({ to, label, Icone }) => (
-              <NavLink key={to} to={to} className={classeLink}>
-                <Icone />
-                {label}
-              </NavLink>
-            ))}
+            {ITENS.map(({ to, label, Icone }) => {
+              const mostrarBadge = to === '/app/tutor-ia' && naoLida
+              return (
+                <NavLink key={to} to={to} className={classeLink}>
+                  <span className="menu__icon">
+                    <Icone />
+                    {mostrarBadge && <span className="menu__badge" aria-hidden="true" />}
+                  </span>
+                  {label}
+                  {mostrarBadge && <span className="sr-only"> (nova resposta)</span>}
+                </NavLink>
+              )
+            })}
           </nav>
         </div>
       </header>

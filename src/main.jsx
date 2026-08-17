@@ -5,6 +5,7 @@ import App from './App'
 import { UsuarioProvider } from './context/UsuarioContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { ToastProvider } from './context/ToastContext'
+import { TutorIaProvider } from './context/TutorIaContext'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <ThemeProvider>
         <ToastProvider>
           <UsuarioProvider>
-            <App />
+            <TutorIaProvider>
+              <App />
+            </TutorIaProvider>
           </UsuarioProvider>
         </ToastProvider>
       </ThemeProvider>

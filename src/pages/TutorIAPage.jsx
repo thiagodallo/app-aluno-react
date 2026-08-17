@@ -1,8 +1,17 @@
 import { useState, useRef, useEffect } from 'react'
 import { useUsuario } from '../context/UsuarioContext'
 import { useToast } from '../context/ToastContext'
-import { buscarRespostaTutor } from '../services/apiService'
+import { useTutorIa } from '../context/TutorIaContext'
 import './TutorIAPage.css'
+
+const ROTACOES_AVATAR = [0, 18, -18, 32, -32]
+
+function corAvatar(nome) {
+  let hash = 0
+  for (let i = 0; i < nome.length; i++) hash = nome.charCodeAt(i) + ((hash << 5) - hash)
+  const rotacao = ROTACOES_AVATAR[Math.abs(hash) % ROTACOES_AVATAR.length]
+  return { filter: `hue-rotate(${rotacao}deg)` }
+}
 
 function AvatarTutor() {
   const raios = Array.from({ length: 12 })
@@ -78,16 +87,8 @@ function AcoesMensagem({ curtida, onOuvir, onCopiar, onRefazer, onCurtida }) {
 export default function TutorIAPage() {
   const { usuario } = useUsuario()
   const { notificar } = useToast()
-  const [mensagens, setMensagens] = useState([
-    {
-      id: 1,
-      autor: 'tutor',
-      texto: 'Olá! Sou o Tutor IA. Pergunte qualquer coisa sobre suas disciplinas e eu te ajudo.',
-      inicial: true,
-    },
-  ])
+  const { mensagens, carregando, refazendoId, perguntar, refazer, curtir } = useTutorIa()
   const [pergunta, setPergunta] = useState(() => sessionStorage.getItem('tutorIaRascunho') || '')
-  const [carregando, setCarregando] = useState(false)
   const fimRef = useRef(null)
   const inputRef = useRef(null)
 
@@ -111,26 +112,15 @@ export default function TutorIAPage() {
     return () => document.removeEventListener('keydown', aoTeclar)
   }, [])
 
+  const ocupado = carregando || refazendoId !== null
+
   async function enviar(e) {
     e.preventDefault()
     const texto = pergunta.trim()
-    if (!texto || carregando) return
+    if (!texto || ocupado) return
 
-    setMensagens(prev => [...prev, { id: Date.now(), autor: 'user', texto }])
     setPergunta('')
-    setCarregando(true)
-
-    try {
-      const resposta = await buscarRespostaTutor()
-      setMensagens(prev => [...prev, { id: Date.now() + 1, autor: 'tutor', texto: resposta }])
-    } catch {
-      setMensagens(prev => [
-        ...prev,
-        { id: Date.now() + 1, autor: 'tutor', texto: 'Desculpe, não consegui responder agora. Tente novamente.' },
-      ])
-    } finally {
-      setCarregando(false)
-    }
+    await perguntar(texto)
   }
 
   function ouvir(texto) {
@@ -149,26 +139,6 @@ export default function TutorIAPage() {
     notificar('Resposta copiada.', 'sucesso')
   }
 
-  function curtir(id) {
-    setMensagens(prev => prev.map(m =>
-      m.id === id ? { ...m, curtida: m.curtida === 'negativa' ? null : 'negativa' } : m
-    ))
-  }
-
-  async function refazer(id) {
-    setCarregando(true)
-    try {
-      const resposta = await buscarRespostaTutor()
-      setMensagens(prev => prev.map(m => (m.id === id ? { ...m, texto: resposta } : m)))
-    } catch {
-      setMensagens(prev => prev.map(m =>
-        m.id === id ? { ...m, texto: 'Desculpe, não consegui responder agora. Tente novamente.' } : m
-      ))
-    } finally {
-      setCarregando(false)
-    }
-  }
-
   const nomeUsuario = usuario?.nome || 'Aluno'
   const inicialUsuario = nomeUsuario[0].toUpperCase()
 
@@ -179,12 +149,22 @@ export default function TutorIAPage() {
           <div className="msg" key={m.id}>
             {m.autor === 'tutor'
               ? <AvatarTutor />
-              : <div className="msg__avatar msg__avatar--user">{inicialUsuario}</div>}
+              : (
+                <div className="msg__avatar msg__avatar--user" style={corAvatar(nomeUsuario)}>
+                  {inicialUsuario}
+                </div>
+              )}
 
             <div className="msg__corpo">
               <span className="msg__autor">{m.autor === 'tutor' ? 'Tutor IA' : nomeUsuario}</span>
-              <p className="msg__texto">{m.texto}</p>
-              {m.autor === 'tutor' && !m.inicial && (
+              {m.id === refazendoId ? (
+                <div className="msg__digitando">
+                  <span /><span /><span />
+                </div>
+              ) : (
+                <p className="msg__texto">{m.texto}</p>
+              )}
+              {m.autor === 'tutor' && !m.inicial && m.id !== refazendoId && (
                 <AcoesMensagem
                   curtida={m.curtida}
                   onOuvir={() => ouvir(m.texto)}
@@ -222,7 +202,7 @@ export default function TutorIAPage() {
           value={pergunta}
           onChange={e => setPergunta(e.target.value)}
         />
-        <button type="submit" className="chat__enviar" disabled={!pergunta.trim() || carregando} aria-label="Enviar">
+        <button type="submit" className="chat__enviar" disabled={!pergunta.trim() || ocupado} aria-label="Enviar">
           <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M10 16V5M5 10l5-5 5 5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
