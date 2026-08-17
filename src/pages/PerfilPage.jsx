@@ -13,6 +13,15 @@ const ABAS = [
   { nome: 'Segurança', id: 'seguranca' },
 ]
 
+const ROTACOES_AVATAR = [0, 18, -18, 32, -32]
+
+function corAvatar(nome) {
+  let hash = 0
+  for (let i = 0; i < nome.length; i++) hash = nome.charCodeAt(i) + ((hash << 5) - hash)
+  const rotacao = ROTACOES_AVATAR[Math.abs(hash) % ROTACOES_AVATAR.length]
+  return { filter: `hue-rotate(${rotacao}deg)` }
+}
+
 export default function PerfilPage() {
   const { usuario } = useUsuario()
   const [abaAtiva, setAbaAtiva] = useState(ABAS[0].id)
@@ -23,7 +32,7 @@ export default function PerfilPage() {
   return (
     <div className="perfil">
       <div className="perfil__header">
-        <div className="perfil__avatar">{iniciais}</div>
+        <div className="perfil__avatar" style={corAvatar(nome)}>{iniciais}</div>
         <div>
           <h1 className="perfil__nome">{nome}</h1>
           <p className="perfil__meta">
