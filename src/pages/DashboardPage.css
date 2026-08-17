@@ -22,6 +22,11 @@
   gap: 32px;
   padding: 28px 32px;
   margin-bottom: 20px;
+  animation: entrar 0.35s ease both;
+}
+
+.progress-card:nth-of-type(2) {
+  animation-delay: 0.06s;
 }
 
 .progress-card__info {
@@ -72,7 +77,12 @@
 
 .stat-card {
   padding: 22px 24px;
+  animation: entrar 0.35s ease both;
 }
+
+.dash__stats .stat-card:nth-child(1) { animation-delay: 0.04s; }
+.dash__stats .stat-card:nth-child(2) { animation-delay: 0.08s; }
+.dash__stats .stat-card:nth-child(3) { animation-delay: 0.12s; }
 
 .stat-card__head {
   display: flex;
