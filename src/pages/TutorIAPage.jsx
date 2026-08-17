@@ -87,10 +87,21 @@ function AcoesMensagem({ curtida, onOuvir, onCopiar, onRefazer, onCurtida }) {
 export default function TutorIAPage() {
   const { usuario } = useUsuario()
   const { notificar } = useToast()
-  const { mensagens, carregando, refazendoId, perguntar, refazer, curtir } = useTutorIa()
+  const {
+    conversas,
+    conversaAtiva,
+    carregando,
+    refazendoId,
+    novaConversa,
+    selecionarConversa,
+    perguntar,
+    refazer,
+    curtir,
+  } = useTutorIa()
   const [pergunta, setPergunta] = useState(() => sessionStorage.getItem('tutorIaRascunho') || '')
   const fimRef = useRef(null)
   const inputRef = useRef(null)
+  const mensagens = conversaAtiva.mensagens
 
   useEffect(() => {
     const reduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -144,75 +155,99 @@ export default function TutorIAPage() {
   const inicialUsuario = nomeUsuario[0].toUpperCase()
 
   return (
-    <div className="chat">
-      <div className="chat__mensagens">
-        {mensagens.map(m => (
-          <div className="msg" key={m.id}>
-            {m.autor === 'tutor'
-              ? <AvatarTutor />
-              : (
-                <div className="msg__avatar msg__avatar--user" style={corAvatar(nomeUsuario)}>
-                  {inicialUsuario}
-                </div>
-              )}
+    <div className="chat-layout">
+      <aside className="chat-sidebar">
+        <button type="button" className="chat-sidebar__nova" onClick={novaConversa}>
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M10 4v12M4 10h12" strokeLinecap="round" />
+          </svg>
+          Nova conversa
+        </button>
+        <nav className="chat-sidebar__lista" aria-label="Conversas anteriores">
+          {conversas.map(c => (
+            <button
+              key={c.id}
+              type="button"
+              className={`chat-sidebar__item ${c.id === conversaAtiva.id ? 'chat-sidebar__item--ativa' : ''}`}
+              aria-current={c.id === conversaAtiva.id ? 'true' : undefined}
+              onClick={() => selecionarConversa(c.id)}
+            >
+              {c.titulo}
+            </button>
+          ))}
+        </nav>
+      </aside>
 
-            <div className="msg__corpo">
-              <span className="msg__autor">{m.autor === 'tutor' ? 'Tutor IA' : nomeUsuario}</span>
-              {m.id === refazendoId ? (
+      <div className="chat">
+        <div className="chat__mensagens">
+          {mensagens.map(m => (
+            <div className="msg" key={m.id}>
+              {m.autor === 'tutor'
+                ? <AvatarTutor />
+                : (
+                  <div className="msg__avatar msg__avatar--user" style={corAvatar(nomeUsuario)}>
+                    {inicialUsuario}
+                  </div>
+                )}
+
+              <div className="msg__corpo">
+                <span className="msg__autor">{m.autor === 'tutor' ? 'Tutor IA' : nomeUsuario}</span>
+                {m.id === refazendoId ? (
+                  <div className="msg__digitando">
+                    <span /><span /><span />
+                  </div>
+                ) : (
+                  <p className="msg__texto">{m.texto}</p>
+                )}
+                {m.autor === 'tutor' && !m.inicial && m.id !== refazendoId && (
+                  <AcoesMensagem
+                    curtida={m.curtida}
+                    onOuvir={() => ouvir(m.texto)}
+                    onCopiar={() => copiar(m.texto)}
+                    onRefazer={() => refazer(m.id)}
+                    onCurtida={() => curtir(m.id)}
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+
+          {carregando && (
+            <div className="msg">
+              <AvatarTutor />
+              <div className="msg__corpo">
+                <span className="msg__autor">Tutor IA</span>
                 <div className="msg__digitando">
                   <span /><span /><span />
                 </div>
-              ) : (
-                <p className="msg__texto">{m.texto}</p>
-              )}
-              {m.autor === 'tutor' && !m.inicial && m.id !== refazendoId && (
-                <AcoesMensagem
-                  curtida={m.curtida}
-                  onOuvir={() => ouvir(m.texto)}
-                  onCopiar={() => copiar(m.texto)}
-                  onRefazer={() => refazer(m.id)}
-                  onCurtida={() => curtir(m.id)}
-                />
-              )}
-            </div>
-          </div>
-        ))}
-
-        {carregando && (
-          <div className="msg">
-            <AvatarTutor />
-            <div className="msg__corpo">
-              <span className="msg__autor">Tutor IA</span>
-              <div className="msg__digitando">
-                <span /><span /><span />
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <div ref={fimRef} />
+          <div ref={fimRef} />
+        </div>
+
+        <form className="chat__input" onSubmit={enviar}>
+          <label htmlFor="pergunta-tutor" className="sr-only">Pergunte alguma coisa ao Tutor IA</label>
+          <input
+            id="pergunta-tutor"
+            ref={inputRef}
+            type="text"
+            placeholder="Pergunte alguma coisa (atalho: /)"
+            value={pergunta}
+            onChange={e => setPergunta(e.target.value)}
+          />
+          <button type="submit" className="chat__enviar" disabled={!pergunta.trim() || ocupado} aria-label="Enviar">
+            <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10 16V5M5 10l5-5 5 5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </form>
+
+        <p className="chat__aviso">
+          O Tutor pode cometer erros. Considere verificar informações importantes.
+        </p>
       </div>
-
-      <form className="chat__input" onSubmit={enviar}>
-        <label htmlFor="pergunta-tutor" className="sr-only">Pergunte alguma coisa ao Tutor IA</label>
-        <input
-          id="pergunta-tutor"
-          ref={inputRef}
-          type="text"
-          placeholder="Pergunte alguma coisa (atalho: /)"
-          value={pergunta}
-          onChange={e => setPergunta(e.target.value)}
-        />
-        <button type="submit" className="chat__enviar" disabled={!pergunta.trim() || ocupado} aria-label="Enviar">
-          <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M10 16V5M5 10l5-5 5 5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-      </form>
-
-      <p className="chat__aviso">
-        O Tutor pode cometer erros. Considere verificar informações importantes.
-      </p>
     </div>
   )
 }

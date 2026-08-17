@@ -1,4 +1,82 @@
+.chat-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* ── Sidebar de conversas ── */
+.chat-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 190px);
+}
+
+.chat-sidebar__nova {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border: 1.5px dashed var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.chat-sidebar__nova:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.chat-sidebar__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.chat-sidebar__item {
+  display: block;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.chat-sidebar__item:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.chat-sidebar__item--ativa {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+}
+
 .chat {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 170px);
@@ -196,4 +274,40 @@
   font-size: 12px;
   color: var(--text-muted);
   margin: 12px 0 0;
+}
+
+/* ── Mobile: sidebar vira fileira horizontal ── */
+@media (max-width: 760px) {
+  .chat-layout {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .chat-sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    max-height: none;
+    position: static;
+    padding: 10px;
+  }
+
+  .chat-sidebar__nova {
+    flex-shrink: 0;
+    margin-bottom: 0;
+    white-space: nowrap;
+  }
+
+  .chat-sidebar__lista {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 6px;
+  }
+
+  .chat-sidebar__item {
+    flex-shrink: 0;
+    width: auto;
+    max-width: 160px;
+  }
 }
