@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUsuario } from '../context/UsuarioContext'
 import { useTema } from '../context/ThemeContext'
+import { useToast } from '../context/ToastContext'
+import Toggle from '../components/Toggle'
+import ConfirmModal from '../components/ConfirmModal'
 import './PerfilPage.css'
 
 const ABAS = [
@@ -79,8 +82,29 @@ function DadosPessoais({ usuario }) {
 
 function Configuracoes() {
   const { tema, alternarTema } = useTema()
-  const [notificacoes, setNotificacoes] = useState(true)
-  const [resumoEmail, setResumoEmail] = useState(false)
+  const { notificar } = useToast()
+  const [notificacoes, setNotificacoes] = useState(() => {
+    const salvo = localStorage.getItem('notificacoesPush')
+    return salvo === null ? true : salvo === 'true'
+  })
+  const [resumoEmail, setResumoEmail] = useState(() => {
+    const salvo = localStorage.getItem('resumoEmail')
+    return salvo === null ? false : salvo === 'true'
+  })
+
+  useEffect(() => {
+    localStorage.setItem('notificacoesPush', notificacoes)
+  }, [notificacoes])
+
+  useEffect(() => {
+    localStorage.setItem('resumoEmail', resumoEmail)
+  }, [resumoEmail])
+
+  function trocarTema(novoTema) {
+    if (tema === novoTema) return
+    alternarTema()
+    notificar(`Tema ${novoTema === 'dark' ? 'escuro' : 'claro'} ativado.`, 'info')
+  }
 
   return (
     <div className="card config">
@@ -92,13 +116,13 @@ function Configuracoes() {
         <div className="tema-switch">
           <button
             className={tema === 'light' ? 'tema-switch__btn tema-switch__btn--ativo' : 'tema-switch__btn'}
-            onClick={() => tema !== 'light' && alternarTema()}
+            onClick={() => trocarTema('light')}
           >
             ☀ Claro
           </button>
           <button
             className={tema === 'dark' ? 'tema-switch__btn tema-switch__btn--ativo' : 'tema-switch__btn'}
-            onClick={() => tema !== 'dark' && alternarTema()}
+            onClick={() => trocarTema('dark')}
           >
             ☾ Escuro
           </button>
@@ -126,11 +150,14 @@ function Configuracoes() {
 
 function Seguranca() {
   const { fazerLogout } = useUsuario()
+  const { notificar } = useToast()
   const navigate = useNavigate()
   const [doisFatores, setDoisFatores] = useState(false)
+  const [confirmandoSaida, setConfirmandoSaida] = useState(false)
 
   function sair() {
     fazerLogout()
+    notificar('Sessão encerrada.', 'info')
     navigate('/login')
   }
 
@@ -157,21 +184,18 @@ function Seguranca() {
           <h4>Sair da conta</h4>
           <p>Encerrar a sessão neste dispositivo.</p>
         </div>
-        <button className="btn btn--danger" onClick={sair}>Sair</button>
+        <button className="btn btn--danger" onClick={() => setConfirmandoSaida(true)}>Sair</button>
       </div>
-    </div>
-  )
-}
 
-function Toggle({ ligado, onChange }) {
-  return (
-    <button
-      type="button"
-      className={`toggle ${ligado ? 'toggle--on' : ''}`}
-      onClick={onChange}
-      aria-pressed={ligado}
-    >
-      <span className="toggle__bola" />
-    </button>
+      <ConfirmModal
+        aberto={confirmandoSaida}
+        titulo="Sair da conta"
+        mensagem="Você precisará entrar novamente para acessar o portal. Deseja continuar?"
+        textoConfirmar="Sair"
+        perigo
+        onConfirmar={sair}
+        onCancelar={() => setConfirmandoSaida(false)}
+      />
+    </div>
   )
 }

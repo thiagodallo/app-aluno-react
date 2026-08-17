@@ -1,0 +1,67 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 18, 22, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1100;
+  animation: overlay-entrar 0.15s ease;
+}
+
+.modal {
+  width: 100%;
+  max-width: 380px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  padding: 28px;
+  animation: modal-entrar 0.18s ease;
+}
+
+.modal__titulo {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.modal__mensagem {
+  margin: 0 0 24px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.modal__acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal__acoes .btn {
+  height: 40px;
+  padding: 0 18px;
+}
+
+@keyframes overlay-entrar {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-entrar {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 760px) {
+  .modal__acoes {
+    flex-direction: column-reverse;
+  }
+
+  .modal__acoes .btn {
+    width: 100%;
+  }
+}
