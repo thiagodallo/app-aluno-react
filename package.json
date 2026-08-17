@@ -1,5 +1,6 @@
 {
   "name": "app-aluno-react",
+  "description": "Portal do aluno da SATC — painel, disciplinas, tutor IA e perfil, em React + Vite.",
   "private": true,
   "version": "1.0.0",
   "type": "module",
