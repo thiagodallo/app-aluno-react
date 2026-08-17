@@ -22,7 +22,7 @@ export default function InternalLayout() {
       <header className="menu">
         <div className="menu__body">
           <div className="menu__brand">
-            <h1 className="menu__title">Academia</h1>
+            <p className="menu__title">Academia</p>
             <span className="menu__subtitle">Portal do Aluno</span>
           </div>
 

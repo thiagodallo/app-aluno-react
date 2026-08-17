@@ -58,6 +58,7 @@ export default function PerfilPage() {
       </div>
 
       <div id={`painel-${abaAtiva}`} role="tabpanel" aria-labelledby={`tab-${abaAtiva}`}>
+        <h2 className="sr-only">{ABAS.find(aba => aba.id === abaAtiva).nome}</h2>
         {abaAtiva === 'dados-pessoais' && <DadosPessoais usuario={usuario} />}
         {abaAtiva === 'configuracoes' && <Configuracoes />}
         {abaAtiva === 'seguranca' && <Seguranca />}
@@ -119,7 +120,7 @@ function Configuracoes() {
     <div className="card config">
       <div className="config__linha">
         <div className="config__texto">
-          <h4>Aparência</h4>
+          <h3>Aparência</h3>
           <p>Escolha entre o modo claro e o modo escuro.</p>
         </div>
         <div className="tema-switch">
@@ -140,7 +141,7 @@ function Configuracoes() {
 
       <div className="config__linha">
         <div className="config__texto">
-          <h4>Notificações push</h4>
+          <h3>Notificações push</h3>
           <p>Receba alertas sobre tarefas e prazos no navegador.</p>
         </div>
         <Toggle ligado={notificacoes} onChange={() => setNotificacoes(v => !v)} />
@@ -148,7 +149,7 @@ function Configuracoes() {
 
       <div className="config__linha">
         <div className="config__texto">
-          <h4>Resumo por e-mail</h4>
+          <h3>Resumo por e-mail</h3>
           <p>Receba um resumo semanal das suas atividades.</p>
         </div>
         <Toggle ligado={resumoEmail} onChange={() => setResumoEmail(v => !v)} />
@@ -174,7 +175,7 @@ function Seguranca() {
     <div className="card config">
       <div className="config__linha">
         <div className="config__texto">
-          <h4>Senha</h4>
+          <h3>Senha</h3>
           <p>Sua última alteração foi há 3 meses.</p>
         </div>
         <button className="btn btn--outline" onClick={() => navigate('/nova-senha')}>Alterar senha</button>
@@ -182,7 +183,7 @@ function Seguranca() {
 
       <div className="config__linha">
         <div className="config__texto">
-          <h4>Autenticação em dois fatores</h4>
+          <h3>Autenticação em dois fatores</h3>
           <p>Adicione uma camada extra de segurança ao entrar.</p>
         </div>
         <Toggle ligado={doisFatores} onChange={() => setDoisFatores(v => !v)} />
@@ -190,7 +191,7 @@ function Seguranca() {
 
       <div className="config__linha">
         <div className="config__texto">
-          <h4>Sair da conta</h4>
+          <h3>Sair da conta</h3>
           <p>Encerrar a sessão neste dispositivo.</p>
         </div>
         <button className="btn btn--danger" onClick={() => setConfirmandoSaida(true)}>Sair</button>

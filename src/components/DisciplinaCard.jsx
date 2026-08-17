@@ -9,7 +9,7 @@ export default function DisciplinaCard({ nome, professor, status, progresso }) {
     <div className="disc-card card">
       <div className="disc-card__head">
         <div>
-          <h3 className="disc-card__nome">{nome}</h3>
+          <h2 className="disc-card__nome">{nome}</h2>
           <p className="disc-card__prof">{professor}</p>
         </div>
         <span className={`badge ${emCurso ? 'badge--green' : 'badge--gray'}`}>

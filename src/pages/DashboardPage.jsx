@@ -34,6 +34,7 @@ export default function DashboardPage() {
         semana e está atualmente adiantado em seu cronograma de leitura.
       </p>
 
+      <h2 className="sr-only">Cursos em progresso</h2>
       {EM_PROGRESSO.map(curso => (
         <div className="progress-card card" key={curso.id}>
           <div className="progress-card__info">
@@ -51,6 +52,7 @@ export default function DashboardPage() {
         </div>
       ))}
 
+      <h2 className="sr-only">Estatísticas</h2>
       <div className="dash__stats">
         {ESTATISTICAS.map(({ id, Icone, label, valor, desc }) => (
           <div className="stat-card card" key={id}>
