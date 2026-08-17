@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useUsuario } from '../context/UsuarioContext'
+import { useToast } from '../context/ToastContext'
 import { buscarRespostaTutor } from '../services/apiService'
 import './TutorIAPage.css'
 
@@ -25,28 +26,47 @@ function AvatarTutor() {
   )
 }
 
-function AcoesMensagem({ texto, curtida, onOuvir, onCopiar, onRefazer, onCurtida }) {
+function AcoesMensagem({ curtida, onOuvir, onCopiar, onRefazer, onCurtida }) {
+  const [copiado, setCopiado] = useState(false)
+
+  function aoCopiar() {
+    onCopiar()
+    setCopiado(true)
+    setTimeout(() => setCopiado(false), 1500)
+  }
+
   return (
     <div className="msg__acoes">
-      <button aria-label="Ouvir" onClick={onOuvir}>
+      <button aria-label="Ouvir" data-tooltip="Ouvir" onClick={onOuvir}>
         <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M4 8v4h3l4 3V5L7 8H4Z" strokeLinejoin="round" />
           <path d="M14 8a3 3 0 0 1 0 4" strokeLinecap="round" />
         </svg>
       </button>
-      <button aria-label="Copiar" onClick={onCopiar}>
-        <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <rect x="7" y="7" width="9" height="9" rx="1.5" />
-          <path d="M13 7V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h2" />
-        </svg>
+      <button aria-label={copiado ? 'Copiado' : 'Copiar'} data-tooltip={copiado ? 'Copiado!' : 'Copiar'} onClick={aoCopiar}>
+        {copiado ? (
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <path d="M4 10l4 4 8-8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <rect x="7" y="7" width="9" height="9" rx="1.5" />
+            <path d="M13 7V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h2" />
+          </svg>
+        )}
       </button>
-      <button aria-label="Refazer" onClick={onRefazer}>
+      <button aria-label="Refazer" data-tooltip="Refazer" onClick={onRefazer}>
         <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M15 6a6 6 0 1 0 1.5 4" strokeLinecap="round" />
           <path d="M16 3v3h-3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      <button aria-label="Não gostei" aria-pressed={curtida === 'negativa'} onClick={onCurtida}>
+      <button
+        aria-label="Não gostei"
+        data-tooltip="Não gostei"
+        aria-pressed={curtida === 'negativa'}
+        onClick={onCurtida}
+      >
         <svg viewBox="0 0 20 20" width="15" height="15" fill={curtida === 'negativa' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5">
           <path d="M13 4v8M6 4h5v8l-3 4a1.5 1.5 0 0 1-1.4-2l.6-2H4a1.5 1.5 0 0 1-1.4-2l1-4A1.5 1.5 0 0 1 5 4h1Z" strokeLinejoin="round" />
         </svg>
@@ -57,6 +77,7 @@ function AcoesMensagem({ texto, curtida, onOuvir, onCopiar, onRefazer, onCurtida
 
 export default function TutorIAPage() {
   const { usuario } = useUsuario()
+  const { notificar } = useToast()
   const [mensagens, setMensagens] = useState([
     {
       id: 1,
@@ -65,13 +86,30 @@ export default function TutorIAPage() {
       inicial: true,
     },
   ])
-  const [pergunta, setPergunta] = useState('')
+  const [pergunta, setPergunta] = useState(() => sessionStorage.getItem('tutorIaRascunho') || '')
   const [carregando, setCarregando] = useState(false)
   const fimRef = useRef(null)
+  const inputRef = useRef(null)
 
   useEffect(() => {
     fimRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [mensagens, carregando])
+
+  useEffect(() => {
+    sessionStorage.setItem('tutorIaRascunho', pergunta)
+  }, [pergunta])
+
+  useEffect(() => {
+    function aoTeclar(e) {
+      if (e.key !== '/') return
+      const digitando = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA'
+      if (digitando) return
+      e.preventDefault()
+      inputRef.current?.focus()
+    }
+    document.addEventListener('keydown', aoTeclar)
+    return () => document.removeEventListener('keydown', aoTeclar)
+  }, [])
 
   async function enviar(e) {
     e.preventDefault()
@@ -96,7 +134,10 @@ export default function TutorIAPage() {
   }
 
   function ouvir(texto) {
-    if (!('speechSynthesis' in window)) return
+    if (!('speechSynthesis' in window)) {
+      notificar('Seu navegador não suporta leitura em voz alta.', 'erro')
+      return
+    }
     window.speechSynthesis.cancel()
     const fala = new SpeechSynthesisUtterance(texto)
     fala.lang = 'pt-BR'
@@ -105,6 +146,7 @@ export default function TutorIAPage() {
 
   function copiar(texto) {
     navigator.clipboard?.writeText(texto)
+    notificar('Resposta copiada.', 'sucesso')
   }
 
   function curtir(id) {
@@ -144,7 +186,6 @@ export default function TutorIAPage() {
               <p className="msg__texto">{m.texto}</p>
               {m.autor === 'tutor' && !m.inicial && (
                 <AcoesMensagem
-                  texto={m.texto}
                   curtida={m.curtida}
                   onOuvir={() => ouvir(m.texto)}
                   onCopiar={() => copiar(m.texto)}
@@ -175,8 +216,9 @@ export default function TutorIAPage() {
         <label htmlFor="pergunta-tutor" className="sr-only">Pergunte alguma coisa ao Tutor IA</label>
         <input
           id="pergunta-tutor"
+          ref={inputRef}
           type="text"
-          placeholder="Pergunte alguma coisa"
+          placeholder="Pergunte alguma coisa (atalho: /)"
           value={pergunta}
           onChange={e => setPergunta(e.target.value)}
         />
