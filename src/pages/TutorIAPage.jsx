@@ -103,7 +103,7 @@ export default function TutorIAPage() {
 
   useEffect(() => {
     function aoTeclar(e) {
-      if (e.key !== '/') return
+      if (e.key !== '/' && e.code !== 'Slash') return
       const digitando = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA'
       if (digitando) return
       e.preventDefault()
