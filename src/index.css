@@ -47,6 +47,7 @@
   --text-strong: #f3f4f6;
   --text-muted: #9aa3ad;
   --border: #2b3038;
+  --danger: #f87171;
 
   color-scheme: dark;
 }
@@ -64,6 +65,11 @@ body {
 a { text-decoration: none; }
 button { cursor: pointer; font-family: var(--font); }
 input, select, textarea { font-family: var(--font); }
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 
 /* ── Utilitários compartilhados ── */
 
@@ -135,6 +141,11 @@ input, select, textarea { font-family: var(--font); }
   background: var(--primary);
   border-radius: 999px;
   transition: width 0.3s ease;
+}
+
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Evita o zoom automático do iOS ao focar campos no celular */
