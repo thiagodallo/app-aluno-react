@@ -14,25 +14,7 @@ function corAvatar(nome) {
 }
 
 function AvatarTutor() {
-  const raios = Array.from({ length: 12 })
-  return (
-    <div className="msg__avatar msg__avatar--tutor">
-      <svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true">
-        {raios.map((_, i) => (
-          <rect
-            key={i}
-            x="15"
-            y="4"
-            width="2"
-            height="9"
-            rx="1"
-            fill="currentColor"
-            transform={`rotate(${i * 30} 16 16)`}
-          />
-        ))}
-      </svg>
-    </div>
-  )
+  return <div className="msg__avatar msg__avatar--tutor" aria-hidden="true" />
 }
 
 function AcoesMensagem({ curtida, onOuvir, onCopiar, onRefazer, onCurtida }) {

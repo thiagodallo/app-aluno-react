@@ -115,9 +115,12 @@
 }
 
 .msg__avatar--tutor {
-  background: var(--white);
+  background-color: var(--white);
+  background-image: url('/logo-unisatc.png');
+  background-repeat: no-repeat;
+  background-size: 165% auto;
+  background-position: center 5%;
   border: 1px solid var(--border);
-  color: #d97757;
 }
 
 .msg__corpo {
