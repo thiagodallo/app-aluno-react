@@ -14,65 +14,12 @@
   line-height: 1.6;
 }
 
-/* ── Cards "Em progresso" ── */
-.progress-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-  padding: 28px 32px;
-  margin-bottom: 20px;
-  animation: entrar 0.35s ease both;
-}
-
-.progress-card:nth-of-type(2) {
-  animation-delay: 0.06s;
-}
-
-.progress-card__info {
-  flex: 1;
-  min-width: 0;
-}
-
-.progress-card__title {
-  margin: 14px 0 4px;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-.progress-card__sub {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 14px;
-}
-
-.progress-card__bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 18px;
-  max-width: 560px;
-}
-
-.progress-card__bar .progress__track {
-  flex: 1;
-}
-
-.progress-card__pct {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
-  min-width: 38px;
-  text-align: right;
-}
-
 /* ── Cards de estatística ── */
 .dash__stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  margin-top: 4px;
+  margin-bottom: 32px;
 }
 
 .stat-card {
@@ -107,23 +54,143 @@
   color: var(--text-muted);
 }
 
+/* ── Cursos em progresso ── */
+.dash__cursos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.progress-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  animation: entrar 0.35s ease both;
+}
+
+.progress-card > .badge {
+  align-self: flex-start;
+}
+
+.progress-card:nth-of-type(2) {
+  animation-delay: 0.06s;
+}
+
+.progress-card__title {
+  margin: 14px 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.progress-card__sub {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.progress-card__proxima {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.progress-card__proxima svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.progress-card__bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 16px 0 20px;
+}
+
+.progress-card__bar .progress__track {
+  flex: 1;
+}
+
+.progress-card__pct {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 38px;
+  text-align: right;
+}
+
+/* ── Tarefas da semana ── */
+.dash__secao-titulo {
+  margin: 8px 0 16px;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-strong);
+  letter-spacing: -0.4px;
+}
+
+.dash__tarefas {
+  padding: 8px 24px;
+}
+
+.tarefa {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.tarefa:last-child {
+  border-bottom: none;
+}
+
+.tarefa input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.tarefa__titulo {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.tarefa__prazo {
+  font-size: 13px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.tarefa--feita .tarefa__titulo {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
 /* ── Mobile ── */
 @media (max-width: 760px) {
   .dash__greeting {
     font-size: 30px;
   }
 
-  .progress-card {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 20px;
-  }
-
-  .progress-card .btn {
-    width: 100%;
-  }
-
   .dash__stats {
     grid-template-columns: 1fr;
+  }
+
+  .dash__cursos {
+    grid-template-columns: 1fr;
+  }
+
+  .tarefa {
+    flex-wrap: wrap;
   }
 }
