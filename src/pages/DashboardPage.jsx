@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useUsuario } from '../context/UsuarioContext'
+import { IconeRelogio, IconeTarefa, IconeChat } from '../components/icons'
 import './DashboardPage.css'
 
 function saudacao() {
@@ -13,32 +14,6 @@ const EM_PROGRESSO = [
   { id: 1, nome: 'Front-end', aula: 'Aula 2: Conceitos do desenvolvimento Front-end e GIT + Github.', progresso: 65 },
   { id: 2, nome: 'UX Design', aula: 'Aula 3: Usabilidade.', progresso: 25 },
 ]
-
-function IconeRelogio() {
-  return (
-    <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <circle cx="10" cy="10" r="7.2" />
-      <path d="M10 6v4l2.5 2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function IconeTarefa() {
-  return (
-    <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <rect x="4" y="3" width="12" height="14" rx="2" />
-      <path d="M7 8h6M7 11h6M7 14h3" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function IconeChat() {
-  return (
-    <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <path d="M4 4h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8l-4 3V5a1 1 0 0 1 1-1Z" strokeLinejoin="round" />
-    </svg>
-  )
-}
 
 const ESTATISTICAS = [
   { id: 1, Icone: IconeRelogio, label: 'Tempo de Estudo', valor: '12h 45m', desc: 'Esta semana' },
