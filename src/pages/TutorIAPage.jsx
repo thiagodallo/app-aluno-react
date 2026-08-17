@@ -47,25 +47,25 @@ function AcoesMensagem({ curtida, onOuvir, onCopiar, onRefazer, onCurtida }) {
   return (
     <div className="msg__acoes">
       <button aria-label="Ouvir" data-tooltip="Ouvir" onClick={onOuvir}>
-        <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M4 8v4h3l4 3V5L7 8H4Z" strokeLinejoin="round" />
           <path d="M14 8a3 3 0 0 1 0 4" strokeLinecap="round" />
         </svg>
       </button>
       <button aria-label={copiado ? 'Copiado' : 'Copiar'} data-tooltip={copiado ? 'Copiado!' : 'Copiar'} onClick={aoCopiar}>
         {copiado ? (
-          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8">
             <path d="M4 10l4 4 8-8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         ) : (
-          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5">
             <rect x="7" y="7" width="9" height="9" rx="1.5" />
             <path d="M13 7V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h2" />
           </svg>
         )}
       </button>
       <button aria-label="Refazer" data-tooltip="Refazer" onClick={onRefazer}>
-        <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M15 6a6 6 0 1 0 1.5 4" strokeLinecap="round" />
           <path d="M16 3v3h-3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -76,7 +76,7 @@ function AcoesMensagem({ curtida, onOuvir, onCopiar, onRefazer, onCurtida }) {
         aria-pressed={curtida === 'negativa'}
         onClick={onCurtida}
       >
-        <svg viewBox="0 0 20 20" width="15" height="15" fill={curtida === 'negativa' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5">
+        <svg viewBox="0 0 20 20" width="18" height="18" fill={curtida === 'negativa' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5">
           <path d="M13 4v8M6 4h5v8l-3 4a1.5 1.5 0 0 1-1.4-2l.6-2H4a1.5 1.5 0 0 1-1.4-2l1-4A1.5 1.5 0 0 1 5 4h1Z" strokeLinejoin="round" />
         </svg>
       </button>
@@ -93,7 +93,8 @@ export default function TutorIAPage() {
   const inputRef = useRef(null)
 
   useEffect(() => {
-    fimRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const reduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    fimRef.current?.scrollIntoView({ behavior: reduzirMovimento ? 'auto' : 'smooth' })
   }, [mensagens, carregando])
 
   useEffect(() => {
