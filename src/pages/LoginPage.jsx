@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useUsuario } from '../context/UsuarioContext'
+import { useToast } from '../context/ToastContext'
 import './auth.css'
 
 function validarEmail(email) {
@@ -10,6 +11,7 @@ function validarEmail(email) {
 export default function LoginPage() {
   const navigate = useNavigate()
   const { fazerLogin } = useUsuario()
+  const { notificar } = useToast()
 
   const [form, setForm] = useState({ email: '', senha: '' })
   const [erros, setErros] = useState({})
@@ -46,6 +48,7 @@ export default function LoginPage() {
         cpf: '***.***.***-89',
         telefone: '',
       })
+      notificar('Login realizado com sucesso.', 'sucesso')
       navigate('/app/dashboard')
     }, 700)
   }

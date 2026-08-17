@@ -1,19 +1,21 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { useUsuario } from '../context/UsuarioContext'
+import { useToast } from '../context/ToastContext'
 import './auth.css'
 
 export default function CadastroDadosPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const { fazerLogin } = useUsuario()
-
-  const cpf = location.state?.cpf ?? ''
-  if (!cpf) return <Navigate to="/cadastro" replace />
+  const { notificar } = useToast()
 
   const [form, setForm] = useState({ nome: '', telefone: '', email: '', senha: '' })
   const [erros, setErros] = useState({})
   const [loading, setLoading] = useState(false)
+
+  const cpf = location.state?.cpf ?? ''
+  if (!cpf) return <Navigate to="/cadastro" replace />
 
   function handleChange(e) {
     const { name, value } = e.target
@@ -40,6 +42,7 @@ export default function CadastroDadosPage() {
     setLoading(true)
     setTimeout(() => {
       fazerLogin({ nome: form.nome, email: form.email, cpf })
+      notificar('Cadastro concluído com sucesso.', 'sucesso')
       navigate('/app/dashboard')
     }, 800)
   }
